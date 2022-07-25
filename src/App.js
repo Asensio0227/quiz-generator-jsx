@@ -1,25 +1,68 @@
-import logo from './logo.svg';
-import './App.css';
+import Navbar from './components/Navbar';
+import SetupForm from './components/SetupForm';
+import { useGlobalContext } from './components/context';
+import Loading from './components/Loading'
+import Modal from './components/Modal';
+import ErrorBoundary from './components/ErrorBoundary';
 
 function App() {
+  const { questions, index,correct,waiting,isLoading,nextQuestion,checkAnswer } = useGlobalContext();
+  
+  if (waiting) {
+    return (
+      <SetupForm/>
+    )
+  }
+
+  if (isLoading) {
+    return (
+      <main>
+        <Loading/>
+      </main>
+    )
+  }
+  const { question, incorrect_answers, correct_answer } = questions[index];
+  const answers = [...incorrect_answers];
+  const tempAnswers = Math.floor(Math.random() * 4);
+  if (tempAnswers === 3) {
+    answers.push(answers[correct_answer]);
+  } else {
+    answers.push(answers[tempAnswers]);
+    answers[tempAnswers] = correct_answer;
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Navbar />
+      <main>
+        <Modal />
+        <section className="section-center quiz-small">
+          <p className="correct-answer">
+            correct answer: {correct}/{index}
+          </p>
+          <article className="container">
+            <h2 dangerouslySetInnerHTML={{ __html: question }} />
+            <div className="btn-container">
+              {answers.map((answer, index) => {
+                return (
+                  <button
+                    key={index}
+                    type="button"
+                    className="answer-btn"
+                    onClick={() => checkAnswer(incorrect_answers === answer)}
+                    dangerouslySetInnerHTML={{ __html: answer }}
+                  />
+                )
+              })}
+            </div>
+          </article>
+          <button className="question-btn" onClick={nextQuestion}>
+            next question
+          </button>
+        </section>
+      </main>
+    </>
   );
-}
+};
 
 export default App;
