@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, {  useState, useContext } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 
 
 const table = {
@@ -7,7 +7,7 @@ const table = {
   politics:24,
   mythology: 20,
   history: 23,
-  art: 25,
+  art:25,
   geography: 22,
   animals: 27,
   celebrities:26,
@@ -18,6 +18,14 @@ const tempUrl =
   'https://opentdb.com/api.php?amount=10&category=21&difficulty=easy&type=multiple'
 const AppContext = React.createContext();
 
+const getLocalStorageQuiz = () => {
+  let quiz = "quiz";
+  if (localStorage.getItem('quiz')) {
+    quiz = localStorage.getItem('quiz');
+  }
+  return quiz;
+} 
+
 const AppProvider = ({ children }) => {
   const [waiting, setWaiting] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,10 +33,11 @@ const AppProvider = ({ children }) => {
   const [questions, setQuestions] = useState([]);
   const [quiz, setQuiz] = useState({
     amount: 10,
-    category: " sports",
-    difficulty: " easy",
-    type: "any type",
-  });
+    category:"sports",
+    difficulty:"easy",
+    type:"multiple",
+  },
+    getLocalStorageQuiz());
   const [index, setIndex] = useState(0);
   const [correct, setCorrect] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -58,7 +67,7 @@ const AppProvider = ({ children }) => {
   const nextQuestion = () => {
     setIndex((oldIndex) => {
       const venom = oldIndex + 1;
-      if (venom > questions.length) {
+      if (venom > questions.length - 1) {
         openModal();
         return 0;
       } else {
@@ -84,7 +93,7 @@ const AppProvider = ({ children }) => {
     setIsModalOpen(false);
   }
 
-  const changeHandler = (e) => {
+  const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
     setQuiz({ ...quiz, [name]: value });
@@ -95,9 +104,14 @@ const AppProvider = ({ children }) => {
     console.log(questions);
     const { amount, category, difficulty, type } = quiz;
 
-    const url = `${API_ENDPOINT}?amount=${amount}&difficulty=${difficulty}&category=${table[category]}&type=${type}`;
+    const url = `${API_ENDPOINT}amount=${amount}&difficulty=${difficulty}&category=${table[category]}&type=${type}`;
     fetchQuiz(url);
   }
+
+  useEffect(() => {
+    // document.documentElement.className = search - input;
+    localStorage.setItem('quiz',quiz);
+  },[])
 
   return (
     <AppContext.Provider value={{
@@ -112,7 +126,7 @@ const AppProvider = ({ children }) => {
       checkAnswer,
       closeModal,
       quiz, 
-      changeHandler,
+      handleChange,
       handleSubmit,
     }}>
       {children}

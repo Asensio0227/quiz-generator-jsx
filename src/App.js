@@ -1,3 +1,4 @@
+import React from 'react' 
 import Navbar from './components/Navbar';
 import SetupForm from './components/SetupForm';
 import { useGlobalContext } from './components/context';
@@ -6,7 +7,15 @@ import Modal from './components/Modal';
 import ErrorBoundary from './components/ErrorBoundary';
 
 function App() {
-  const { questions, index,correct,waiting,isLoading,nextQuestion,checkAnswer } = useGlobalContext();
+  const {
+    waiting,
+    isLoading,
+    questions,
+    index,
+    correct,
+    nextQuestion,
+    checkAnswer
+  } = useGlobalContext();
   
   if (waiting) {
     return (
@@ -49,7 +58,7 @@ function App() {
                     key={index}
                     type="button"
                     className="answer-btn"
-                    onClick={() => checkAnswer(incorrect_answers === answer)}
+                    onClick={() => checkAnswer(correct_answer === answer)}
                     dangerouslySetInnerHTML={{ __html: answer }}
                   />
                 )

@@ -2,7 +2,7 @@ import { useGlobalContext } from './context'
 import Navbar from './Navbar'
 
 const SetupForm = () => {
-  const { quiz,changeHandler,isError,handleSubmit } = useGlobalContext();
+  const { quiz,handleChange,isError,handleSubmit } = useGlobalContext();
   return (
     <>
       <Navbar />
@@ -18,7 +18,7 @@ const SetupForm = () => {
                 id="amout"
                 className="search-input"
                 value={quiz.amount}
-                onChange={changeHandler}
+                onChange={handleChange}
                 min={1}
                 max={50}
               />
@@ -30,13 +30,14 @@ const SetupForm = () => {
                 id="category"
                 className="search-input"
                 value={quiz.category}
-                onChange={changeHandler}
+                onChange={handleChange}
               >
+                <option value="any type">any category</option>
                 <option value="sports">sports</option>
                 <option value="celebrities">celebrities</option>
-                <option value="animal">animal</option>
+                <option value="animals">animals</option>
                 <option value="politics">politics</option>
-                <option value="Mythology">Mythology</option>
+                <option value="mythology">mythology</option>
                 <option value="art">art</option>
                 <option value="geography">geography</option>
               </select>
@@ -48,8 +49,9 @@ const SetupForm = () => {
                 id="difficulty"
                 className="search-input"
                 value={quiz.difficulty}
-                onChange={changeHandler}
+                onChange={handleChange}
               >
+                <option value="any type">any difficulty</option>
                 <option value="easy">easy</option>
                 <option value="medium">medium</option>
                 <option value="hard">hard</option>
@@ -62,11 +64,11 @@ const SetupForm = () => {
                 id="type"
                 className="search-input"
                 value={quiz.type}
-                onChange={changeHandler}
+                onChange={handleChange}
               >
                 <option value="any type">any type</option>
-                <option value="multiply choice">multiply choice</option>
-                <option value="true/false">ture/false</option>
+                <option value="multiple">multiple choice</option>
+                <option value="boolean">true / false</option>
               </select>
             </div>
             {isError && (<p className="error">can't generate questions, please select another option</p>)}
